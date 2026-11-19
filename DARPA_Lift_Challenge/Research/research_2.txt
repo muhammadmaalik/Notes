@@ -1,0 +1,58 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry} % Added for better page margins
+\usepackage{booktabs}             % Required for \toprule, \midrule, \bottomrule
+\usepackage{xcolor}               % Used for styling the \note command
+
+% Define the missing \note command
+\newcommand{\note}[1]{\par\medskip\noindent\textcolor{blue!70!black}{\textbf{Note:} #1}\par\medskip}
+
+\begin{document}
+
+% Note: Section 3A appears to be missing above this line
+\noindent\textbf{Things to figure out:} 
+
+We have to start the design phase. Well, in order to be successful, we need to spend less time on our design and simulations and more time towards testing and iterations. I am thinking of 2 to 3 main profiles that we can target.
+\textbf{We will be dividing the design team into three groups; each group will target a profile/configuration. Each team will design its profile, perform simulations, and draft out the results. The results will be compared, debated, and whichever profile is the best in theory will be selected for fabrication and continued testing.}
+
+
+\subsection*{3B --- Stacked (coaxial) rotors, Sikorsky X2-style}
+\begin{itemize}
+  \item Two rotors spinning in opposite directions, stacked on the same shaft. Smallest footprint, and no tail rotor needed.
+  \item Baseline: two \textbf{4.0 m} rotors, spaced about 8--10\% of the rotor diameter apart vertically.
+  \item The X2 has a rear propeller for high speed. \textbf{Leave it out} unless your numbers show it saves enough time or energy on the course to justify its weight.
+\end{itemize}
+
+\noindent\textbf{Things to figure out:} the lower rotor flies in air already pushed down by the upper rotor; two nested shafts and two motors; keeping the blades from touching (stiffer blades or more spacing); turning left and right by giving the two rotors slightly different torque.
+
+\medskip
+\noindent\textbf{Biggest risk:} the gears, shafts and hub are complicated to build and could fail.
+
+\section{Rotor blade work}
+\begin{itemize}
+	\item This is going to include a large rotor blade, about 4--4.5 meters in diameter, fixed on a single electric motor, and a small motor in the back to cancel out the torque produced by the main rotor.
+	\item I mean, most of the components of this profile are trivial. One of the components from this profile, which is going to cause a lot of mental stress, is the blade. From the last competition, we saw that the rotor blades snapped, or broke off into pieces, even though their profile worked and was on track in being top 10. Something happened to their blade and the entire thing crashed.
+	\item This profile requires taking into account even the slightest bend of the rotor blade. For instance, at extreme RPM, the rotor blade is going to buckle, bend, twist, and all that other fancy stuff is going to happen to it. We have to account for every single one of them.
+	\item We can learn an idea from F1. McLaren's rear wing was seen to bend at certain speeds, which reduced drag and gave them a higher top speed on the straights. The way they did it is that they basically aligned the fibers of the wing in such a way that they bend in a certain direction.
+	\item I think that is all from this profile from me.
+
+
+\end{itemize}
+
+\section{How we compare the layouts}
+\begin{center}
+\begin{tabular}{lc}
+\toprule
+Criterion & Weight \\
+\midrule
+Room left under the 24.9 kg limit at 4:1 & 30\% \\
+Power to hover and energy for the course & 25\% \\
+How hard and costly it is to build & 20\% \\
+How hard it is to control safely & 15\% \\
+How easily we can test it on our thrust stand & 10\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+Scores must be backed by the simulation results from each group. If a layout can't fit within the weight budget, it's out, no matter how it scores elsewhere.
+
+\end{document}
