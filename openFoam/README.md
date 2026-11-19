@@ -1,0 +1,1 @@
+A clean, modular OpenFOAM repository built around the **ESI-OpenCFD (`openfoam.com`)** distribution. It includes cross-platform installation scripts, universal case-execution/post-processing scripts, and ready-to-clone physics templates.
