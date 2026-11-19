@@ -1,0 +1,12 @@
+# OpenFOAM time directories (integers and floats, keeping 0/)
+[1-9]*
+0.*
+processor*
+postProcessing/
+dynamicCode/
+
+# Logs and temporary mesh files
+log.*
+*.OpenFOAM
+constant/polyMesh/*
+!constant/polyMesh/blockMeshDict
