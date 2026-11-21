@@ -1,0 +1,43 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class volVectorField;
+    object U;
+}
+
+// Velocity [m/s], initially at rest; buoyancy generates circulation.
+dimensions [0 1 -1 0 0 0 0];
+
+// Starting value inside every cell; setFields may replace selected regions.
+internalField uniform (0 0 0);
+
+boundaryField
+{
+    // Closed stationary cavity wall.
+    hotWall
+    {
+        type noSlip;
+    }
+
+    // Closed stationary cavity wall.
+    coldWall
+    {
+        type noSlip;
+    }
+
+    // Closed stationary cavity wall.
+    topAndBottom
+    {
+        type noSlip;
+    }
+
+    // 2D direction: must also be empty in the mesh, with one cell through thickness.
+    frontAndBack
+    {
+        type empty;
+    }
+
+}

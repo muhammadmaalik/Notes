@@ -1,0 +1,44 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class volScalarField;
+    object p;
+}
+
+// Kinematic gauge pressure p/rho [m^2/s^2]; multiply pressure differences by density for Pa.
+dimensions [0 2 -2 0 0 0 0];
+
+// Starting value inside every cell; setFields may replace selected regions.
+internalField uniform 0;
+
+boundaryField
+{
+    // Pressure follows from the specified velocity.
+    inlet
+    {
+        type zeroGradient;
+    }
+
+    // EDIT kinematic gauge-pressure reference, NOT absolute Pa.
+    outlet
+    {
+        type fixedValue;
+        value uniform 0;
+    }
+
+    // Zero normal pressure gradient for this stationary channel.
+    walls
+    {
+        type zeroGradient;
+    }
+
+    // 2D direction: must also be empty in the mesh, with one cell through thickness.
+    frontAndBack
+    {
+        type empty;
+    }
+
+}

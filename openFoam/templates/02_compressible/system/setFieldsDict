@@ -1,0 +1,31 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object setFieldsDict;
+}
+
+// Applied AFTER blockMesh and BEFORE decomposition/solver startup.
+// EDIT driven (right) state; keep these consistent with the defaults in 0/.
+defaultFieldValues
+(
+    volScalarFieldValue p 10000
+    volScalarFieldValue T 278.746
+    volVectorFieldValue U (0 0 0)
+);
+regions
+(
+    boxToCell
+    {
+        // EDIT driver region [m]. Diaphragm initially at x=0; box encloses left half.
+        box (-5.001 -0.001 -0.001) (0 0.101 0.101);
+        fieldValues
+        (
+            volScalarFieldValue p 100000
+            volScalarFieldValue T 348.432
+        );
+    }
+);

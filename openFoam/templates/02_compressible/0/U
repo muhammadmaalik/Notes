@@ -1,0 +1,31 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class volVectorField;
+    object U;
+}
+
+// Velocity [m/s]; initially stationary gas.
+dimensions [0 1 -1 0 0 0 0];
+
+// Starting value inside every cell; setFields may replace selected regions.
+internalField uniform (0 0 0);
+
+boundaryField
+{
+    // Open-gradient ends: stop before waves reach them; not an exact nonreflecting condition.
+    ends
+    {
+        type zeroGradient;
+    }
+
+    // 1D model: y and z have one cell and empty boundaries.
+    transverse
+    {
+        type empty;
+    }
+
+}

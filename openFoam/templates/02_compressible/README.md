@@ -1,7 +1,26 @@
-# 02 - Compressible Flow (02_compressible)
+# Transient compressible shock tube
 
-Transient 1D Sod shock tube solved with rhoCentralFoam (Kurganov-Tadmor density-based shock-capturing solver).
+Solver: `rhoCentralFoam` (OpenCFD).
 
-- 0/        : Initial velocity U, absolute pressure p (10 kPa low side), and temperature T (278.746 K)
-- constant/ : Ideal gas thermophysical properties (molWeight 28.96, Cp 1004.5, inviscid mu = 0) and laminar setting
-- system/   : 10m shock tube (400x1x1), setFieldsDict for the 100 kPa driver section (x < 0), adaptive time step (maxCo 0.2), and vanLeer reconstruction
+1D inviscid ideal-gas tube from x=−5 to +5 m; 400 × 1 × 1 cells. Gas initially rests on both sides of x=0. The left driver has p=100000 Pa and T=348.432 K; the right state has p=10000 Pa and T=278.746 K. The y and z boundaries are empty.
+
+## Edit first
+
+- `system/setFieldsDict`: diaphragm location and both gas states; overrides internal p/T/U at startup.
+- `0/p`, `0/T`, `0/U`: boundary conditions and consistent initial defaults.
+- `constant/thermophysicalProperties`: ideal-gas molecular weight, Cp, mu and Pr.
+- `system/controlDict`: end time, acoustic Courant limit, and output interval.
+
+## Run controls and scope
+
+Runs to 0.007 s with maxCo=0.2 and writes every 0.001 s. End patches use zeroGradient and are not exact nonreflecting boundaries; stop before waves reach them. mu=0 deliberately removes molecular viscosity and heat diffusion; rework the physics and numerics when modeling real viscous flow.
+
+All templates start laminar and use one core by default. Read the [editing guide](../../EDITING_GUIDE.md) before switching physics or moving to 3D.
+
+```bash
+# From openFoam/: clone this template before editing.
+python3 scripts/new_case.py 02_compressible my_run --cores 1
+cd cases/my_run
+../../scripts/run_case.sh --mesh-only
+../../scripts/run_case.sh
+```

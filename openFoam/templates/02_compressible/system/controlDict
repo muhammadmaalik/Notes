@@ -1,0 +1,43 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object controlDict;
+}
+
+// Solver executable: changing this also requires matching fields and physics.
+application rhoCentralFoam;
+
+// Fresh runs begin at 0. Manual restarts need startFrom latestTime;
+// do NOT use the fresh-run script for a restart (it remeshes/reinitializes).
+startFrom startTime;
+startTime 0;
+stopAt endTime;
+
+// EDIT: physical stop time in seconds.
+endTime 0.007;
+// Initial physical time step [s]; adaptive controls below may reduce it.
+deltaT 1e-6;
+
+// EDIT: write every N seconds, shortening steps to hit output times.
+writeControl adjustableRunTime;
+writeInterval 0.001;
+purgeWrite 0;                 // Keep all written times; >0 keeps only the latest N.
+writeFormat ascii;            // Human-readable output; binary is smaller/faster.
+writePrecision 8;
+writeCompression off;
+timeFormat general;
+timePrecision 10;
+runTimeModifiable yes;         // Re-read editable controls during the run.
+
+
+// Acoustic Courant limit: important even when initial U is zero.
+adjustTimeStep yes;
+maxCo 0.2;
+maxDeltaT 1e-4; // EDIT upper time-step bound [s].
+
+// Optional function objects (probes, forces, averages) go in this dictionary.
+functions {}

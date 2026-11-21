@@ -1,4 +1,5 @@
-# Physical Properties (01_incompressible/constant/)
+# Physical properties
 
-- transportProperties  : Newtonian fluid with kinematic viscosity nu = 0.01 m^2/s.
-- turbulenceProperties : Set to laminar (switch to RAS for turbulent k-omega SST / k-epsilon simulations).
+`transportProperties`: Newtonian kinematic viscosity nu=0.01 m²/s (educational laminar default).
+
+`turbulenceProperties`: laminar. A turbulence switch needs matching extra fields, wall conditions, and numerical settings; see the workspace editing guide.

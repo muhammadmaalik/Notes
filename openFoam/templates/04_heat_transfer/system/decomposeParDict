@@ -1,0 +1,17 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object decomposeParDict;
+}
+
+// EDIT: 1 = serial in scripts/run_case.sh; >1 = MPI parallel execution.
+// You can also set this while cloning: new_case.py TEMPLATE NAME --cores 4
+numberOfSubdomains 1;
+// Automatic graph partitioning; no hand-written (nx ny nz) split needed.
+method scotch;
+distributed no;
+roots ();

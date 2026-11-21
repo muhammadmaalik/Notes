@@ -1,0 +1,51 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object blockMeshDict;
+}
+
+// EDIT geometry here: coordinates are in metres after multiplication by scale.
+scale 1;
+
+// Vertex labels 0..7 form one right-handed hexahedral block.
+vertices
+(
+    (-5 0 0) // 0
+    (5 0 0) // 1
+    (5 0.1 0) // 2
+    (-5 0.1 0) // 3
+    (-5 0 0.1) // 4
+    (5 0 0.1) // 5
+    (5 0.1 0.1) // 6
+    (-5 0.1 0.1) // 7
+);
+
+// EDIT (Nx Ny Nz): cell counts; keep empty directions at one cell.
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (400 1 1) simpleGrading (1 1 1)
+);
+
+// Uniform spacing by default; simpleGrading controls expansion ratios.
+edges ();
+
+// Patch names must match EVERY field in 0/. Face order points outward.
+boundary
+(
+    ends
+    {
+        type patch;
+        faces ((0 4 7 3) (1 2 6 5));
+    }
+    transverse
+    {
+        type empty;
+        faces ((0 1 5 4) (3 7 6 2) (0 3 2 1) (4 5 6 7));
+    }
+);
+
+mergePatchPairs ();

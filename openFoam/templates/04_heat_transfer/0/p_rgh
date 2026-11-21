@@ -1,0 +1,46 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class volScalarField;
+    object p_rgh;
+}
+
+// Pressure minus hydrostatic contribution [Pa]. Keep the initial level consistent with p.
+dimensions [1 -1 -2 0 0 0 0];
+
+// Starting value inside every cell; setFields may replace selected regions.
+internalField uniform 100000;
+
+boundaryField
+{
+    // Impermeable wall: pressure gradient consistent with U and gravity.
+    hotWall
+    {
+        type fixedFluxPressure;
+        value uniform 100000;
+    }
+
+    // Impermeable wall: pressure gradient consistent with U and gravity.
+    coldWall
+    {
+        type fixedFluxPressure;
+        value uniform 100000;
+    }
+
+    // Impermeable wall: pressure gradient consistent with U and gravity.
+    topAndBottom
+    {
+        type fixedFluxPressure;
+        value uniform 100000;
+    }
+
+    // 2D direction: must also be empty in the mesh, with one cell through thickness.
+    frontAndBack
+    {
+        type empty;
+    }
+
+}

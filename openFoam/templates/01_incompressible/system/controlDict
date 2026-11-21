@@ -1,0 +1,38 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object controlDict;
+}
+
+// Solver executable: changing this also requires matching fields and physics.
+application simpleFoam;
+
+// Fresh runs begin at 0. Manual restarts need startFrom latestTime;
+// do NOT use the fresh-run script for a restart (it remeshes/reinitializes).
+startFrom startTime;
+startTime 0;
+stopAt endTime;
+
+// EDIT: iteration count (steady solver, not elapsed physical seconds).
+endTime 1000;
+// One pseudo-time step per steady iteration.
+deltaT 1;
+
+// EDIT: write every N iterations.
+writeControl timeStep;
+writeInterval 100;
+purgeWrite 0;                 // Keep all written times; >0 keeps only the latest N.
+writeFormat ascii;            // Human-readable output; binary is smaller/faster.
+writePrecision 8;
+writeCompression off;
+timeFormat general;
+timePrecision 10;
+runTimeModifiable yes;         // Re-read editable controls during the run.
+
+
+// Optional function objects (probes, forces, averages) go in this dictionary.
+functions {}

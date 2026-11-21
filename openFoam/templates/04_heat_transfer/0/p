@@ -1,0 +1,46 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class volScalarField;
+    object p;
+}
+
+// Absolute thermodynamic pressure [Pa]; initializes ideal-gas density and total mass.
+dimensions [1 -1 -2 0 0 0 0];
+
+// Starting value inside every cell; setFields may replace selected regions.
+internalField uniform 100000;
+
+boundaryField
+{
+    // Derived from p_rgh and gravity; initial value sets closed-cavity gas mass.
+    hotWall
+    {
+        type calculated;
+        value uniform 100000;
+    }
+
+    // Derived from p_rgh and gravity; initial value sets closed-cavity gas mass.
+    coldWall
+    {
+        type calculated;
+        value uniform 100000;
+    }
+
+    // Derived from p_rgh and gravity; initial value sets closed-cavity gas mass.
+    topAndBottom
+    {
+        type calculated;
+        value uniform 100000;
+    }
+
+    // 2D direction: must also be empty in the mesh, with one cell through thickness.
+    frontAndBack
+    {
+        type empty;
+    }
+
+}

@@ -1,5 +1,7 @@
-# Initial & Boundary Conditions (04_heat_transfer/0/)
+# Initial and boundary conditions
 
-- T     : Temperature (K), fixed at 320 K on hotWall, 280 K on coldWall, and zeroGradient on topAndBottom.
-- U     : Velocity field (m/s) with noSlip on all cavity walls.
-- p_rgh : Dynamic pressure p - rho*g*x (Pa), initialized to 100,000 Pa with fixedFluxPressure on walls.
+`U`: velocity [m/s]. `T`: absolute temperature [K]. `p`: absolute thermodynamic pressure [Pa]. `p_rgh`: pressure with hydrostatic contribution removed [Pa].
+
+All walls are noSlip; left/right T are 320/280 K and horizontal walls are insulated. `p` boundaries are calculated, while `p_rgh` uses fixedFluxPressure. Both pressure fields are required.
+
+Each field contains inline comments. Patch names must match `system/blockMeshDict`.

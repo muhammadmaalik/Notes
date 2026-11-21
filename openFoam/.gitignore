@@ -1,7 +1,6 @@
 cases/*
 !cases/.gitkeep
-[1-9]*
-0.*
+!cases/README.md
 processor*
 postProcessing/
 dynamicCode/

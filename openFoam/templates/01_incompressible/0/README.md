@@ -1,4 +1,7 @@
-# Initial & Boundary Conditions (01_incompressible/0/)
+# Initial and boundary conditions
 
-- U : Velocity vector field (m/s). Uniform (1 0 0) at inlet, zeroGradient at outlet, noSlip on walls, empty on frontAndBack.
-- p : Kinematic pressure p/rho (m^2/s^2). zeroGradient on inlet and walls, fixedValue 0 at outlet.
+`U`: velocity [m/s]; fixedValue inlet, zeroGradient outlet, noSlip walls.
+
+`p`: kinematic gauge pressure [m²/s²]; zeroGradient inlet/walls, fixedValue zero outlet.
+
+Each field contains inline comments. Patch names must match `system/blockMeshDict`.

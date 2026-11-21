@@ -1,5 +1,5 @@
-# Two-Phase Fluid & Gravity Properties (03_multiphase/constant/)
+# Physical properties
 
-- g                    : Gravitational acceleration vector (0 -9.81 0) m/s^2.
-- transportProperties  : Immiscible water (rho=1000, nu=1e-6) and air (rho=1, nu=1.48e-5) with surface tension sigma=0.07 N/m.
-- turbulenceProperties : Set to laminar.
+`transportProperties`: water rho=1000 kg/m³, nu=1e-6 m²/s; air rho=1 kg/m³, nu=1.48e-5 m²/s; sigma=0.07 N/m. `g`: (0 −9.81 0) m/s².
+
+`turbulenceProperties`: laminar. A turbulence switch needs matching extra fields, wall conditions, and numerical settings; see the workspace editing guide.

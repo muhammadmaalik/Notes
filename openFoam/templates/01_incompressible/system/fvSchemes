@@ -1,0 +1,25 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object fvSchemes;
+}
+
+// Steady equations: iteration number is not physical time.
+ddtSchemes { default steadyState; }
+gradSchemes { default Gauss linear; }
+divSchemes
+{
+    default none;
+    // Second-order convection with a steady boundedness correction.
+    div(phi,U) bounded Gauss linearUpwind grad(U);
+    // Viscous stress contribution used by the momentum equation.
+    div((nuEff*dev2(T(grad(U))))) Gauss linear;
+}
+laplacianSchemes { default Gauss linear corrected; }
+interpolationSchemes { default linear; }
+snGradSchemes { default corrected; }
+wallDist { method meshWave; }

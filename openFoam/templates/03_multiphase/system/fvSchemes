@@ -1,0 +1,23 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object fvSchemes;
+}
+
+ddtSchemes { default Euler; }
+gradSchemes { default Gauss linear; }
+divSchemes
+{
+    default none;
+    div(rhoPhi,U) Gauss linearUpwind grad(U); // Density-weighted momentum convection.
+    div(phi,alpha) Gauss vanLeer;            // Volume fraction advection.
+    div(phirb,alpha) Gauss linear;           // Artificial interface-compression flux.
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+}
+laplacianSchemes { default Gauss linear corrected; }
+interpolationSchemes { default linear; }
+snGradSchemes { default corrected; }

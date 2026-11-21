@@ -1,5 +1,7 @@
-# Initial & Boundary Conditions (03_multiphase/0/)
+# Initial and boundary conditions
 
-- alpha.water : Water volume fraction (0 = air, 1 = water) with inletOutlet on the open atmosphere boundary.
-- p_rgh       : Dynamic pressure p - rho*g*x (Pa), fixedFluxPressure on walls and totalPressure 0 at atmosphere.
-- U           : Velocity field (m/s), noSlip on walls and pressureInletOutletVelocity at atmosphere.
+`U`: shared velocity [m/s]. `p_rgh`: pressure with hydrostatic contribution removed [Pa]. `alpha.water`: dimensionless water fraction.
+
+Walls are noSlip for U, fixedFluxPressure for p_rgh, and zeroGradient for alpha. The open top permits outflow and admits air. `setFieldsDict` sets the water column.
+
+Each field contains inline comments. Patch names must match `system/blockMeshDict`.

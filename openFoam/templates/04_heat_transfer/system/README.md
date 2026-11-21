@@ -1,6 +1,9 @@
-# Buoyant Solver & Mesh Controls (04_heat_transfer/system/)
+# Mesh and numerical controls
 
-- blockMeshDict : 0.1m x 0.1m closed 2D cavity (40 x 40 x 1 cells).
-- controlDict   : Runs buoyantSimpleFoam for 500 steady-state iterations, writing every 100 steps.
-- fvSchemes     : Steady-state derivatives with bounded Gauss linearUpwind for U and enthalpy h.
-- fvSolution    : GAMG for p_rgh, smoothSolver for U and h, reference pressure cell at 100,000 Pa, and under-relaxation.
+    - `blockMeshDict`: dimensions, cell counts, grading, and named boundary faces.
+    - `controlDict`: executable, duration, initial/adaptive time step, output frequency.
+    - `fvSchemes`: space/time discretization appropriate to this solver.
+    - `fvSolution`: equation solvers, coupling controls, convergence and relaxation.
+    - `decomposeParDict`: one core by default; the runner uses MPI when greater than one.
+
+Read the inline comments and the case README for defaults and editing dependencies.

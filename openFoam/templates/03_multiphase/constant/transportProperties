@@ -1,0 +1,25 @@
+// OpenCFD/OpenFOAM starter case. Edit a copy in cases/, using SI units.
+// See the case README.md and workspace EDITING_GUIDE.md for the editing workflow.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object transportProperties;
+}
+
+// Phase names must agree with the alpha.water field and setFieldsDict.
+phases (water air);
+water
+{
+    transportModel Newtonian;
+    nu 1e-6; // EDIT kinematic viscosity [m^2/s].
+    rho 1000; // EDIT constant density [kg/m^3].
+}
+air
+{
+    transportModel Newtonian;
+    nu 1.48e-5; // [m^2/s].
+    rho 1;     // [kg/m^3].
+}
+sigma 0.07; // EDIT water-air surface tension [N/m].

@@ -1,7 +1,11 @@
-# Solver, Mesh & Shock Setup (02_compressible/system/)
+# Mesh and numerical controls
 
-- blockMeshDict : 10m shock tube from x = -5m to x = +5m (400 x 1 x 1 cells).
-- setFieldsDict : Sets p = 100,000 Pa and T = 348.432 K for x in [-5, 0] (diaphragm at x = 0).
-- controlDict   : Runs rhoCentralFoam to endTime 0.007s with adaptive time stepping (maxCo 0.2).
-- fvSchemes     : Kurganov flux splitting with vanLeer TVD slope limiters.
-- fvSolution    : Explicit diagonal updates for density, momentum, and energy.
+    - `blockMeshDict`: dimensions, cell counts, grading, and named boundary faces.
+    - `controlDict`: executable, duration, initial/adaptive time step, output frequency.
+    - `fvSchemes`: space/time discretization appropriate to this solver.
+    - `fvSolution`: equation solvers, coupling controls, convergence and relaxation.
+    - `decomposeParDict`: one core by default; the runner uses MPI when greater than one.
+
+- `setFieldsDict`: region-based initial state applied after meshing, before decomposition.
+
+Read the inline comments and the case README for defaults and editing dependencies.
