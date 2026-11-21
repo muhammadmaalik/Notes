@@ -1,0 +1,32 @@
+# Profile for the laptop: RTX 5060 Laptop GPU, 8 GB VRAM.
+# Ollama keeps one model on the GPU at a time and swaps when the router switches.
+profile: laptop
+
+ollama:
+  host: http://127.0.0.1:11434
+  timeout_s: 300
+  keep_alive: 10m          # unload idle models after 10 minutes
+
+models:
+  fast: qwen3.5:4b           # 3.3 GB, router + quick chat, fully on GPU
+  reasoning: qwen3.5:9b      # 6.6 GB, math / code / planning, fits 8 GB with 8K context
+  # heavy: gpt-oss:20b       # 14 GB, optional: partial CPU offload, slow but smarter
+  embed: qwen3-embedding:0.6b
+
+model_options:
+  fast:      {num_ctx: 8192, think: false, temperature: 0.7}
+  reasoning: {num_ctx: 8192, think: true,  temperature: 0.6}
+
+router:
+  llm_classify: false        # true = ask the fast model when the heuristic is unsure
+  long_prompt_chars: 700
+
+paths:
+  db: data/atlas.db              # relative = inside the repo (atlas/data)
+  workspace: data/workspace     # write_file can only write inside this folder
+
+agent:
+  max_tool_steps: 5
+  system_prompt: >
+    You are Atlas, Muhammad's personal assistant. Be concise and accurate.
+    Use tools when they help (search, files, deadlines). If you are not sure, say so.

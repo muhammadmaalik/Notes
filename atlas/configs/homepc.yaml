@@ -1,0 +1,32 @@
+# Profile for the home PC: RTX 5070 Ti (16 GB) + RTX 3060 (12 GB), Fedora 44.
+# Tip: pin GPUs later with two Ollama instances or llama-server (see README).
+profile: homepc
+
+ollama:
+  host: http://127.0.0.1:11434
+  timeout_s: 600
+  keep_alive: 30m
+
+models:
+  fast: qwen3.5:9b           # Swift (3060)
+  reasoning: gpt-oss:20b     # Sage (5070 Ti)
+  # deep: qwen3.8:27b        # spans both GPUs, load on demand
+  embed: qwen3-embedding:0.6b
+
+model_options:
+  fast:      {num_ctx: 16384, think: false, temperature: 0.7}
+  reasoning: {num_ctx: 32768, think: true,  temperature: 1.0}
+
+router:
+  llm_classify: true
+  long_prompt_chars: 900
+
+paths:
+  db: data/atlas.db              # relative = inside the repo (atlas/data)
+  workspace: data/workspace
+
+agent:
+  max_tool_steps: 8
+  system_prompt: >
+    You are Atlas, Muhammad's personal assistant. Be concise and accurate.
+    Use tools when they help (search, files, deadlines). If you are not sure, say so.
