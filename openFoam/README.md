@@ -4,8 +4,9 @@ Reusable, commented starter cases for the **OpenCFD / openfoam.com** distributio
 The defaults use SI units and small structured meshes so you can inspect the
 workflow before adapting it to your own geometry. See [EDITING_GUIDE.md](EDITING_GUIDE.md)
 for what each file does, units, boundary conditions, and an editing checklist.
-For STEP/STL or an existing volume mesh, start with [CAD_IMPORT.md](CAD_IMPORT.md)
-and the commented [meshing examples](meshing/README.md).
+For STEP/STL, use the C++ generator below. The commented mesh settings live in
+[the CAD template](templates/05_incompressible_stl/system/). For an existing volume
+mesh, see [CAD_IMPORT.md](CAD_IMPORT.md).
 
 | Template | Solver | Starting problem |
 | --- | --- | --- |
@@ -60,7 +61,8 @@ OpenFOAM itself handles the simulation's computational memory.
 From this `openFoam/` directory:
 
 ```bash
-python3 scripts/new_case.py 01_incompressible my_channel --cores 1
+# Optional manual copy for a reference case; the CAD workflow uses C++ above.
+cp -rT templates/01_incompressible cases/my_channel
 cd cases/my_channel
 # Edit the copied inputs before running.
 ../../scripts/run_case.sh --mesh-only
@@ -91,8 +93,7 @@ conservation errors as well as any residual plot.
 - `cases/`: working runs; outputs and local changes here are ignored by Git.
 - `runs/`: independent CAD runs created by `new_run.cpp`; ignored by Git.
 - `new_run.cpp`: editable C++17 generator; builds the local `new_run` executable.
-- `scripts/`: clone, mesh/check/run, clean, and residual plotting helpers.
-- `meshing/`: optional 3D CAD meshing dictionary examples; copy and adapt explicitly.
+- `scripts/`: launch, clean, and optional residual plotting helpers.
 - `setup/`: existing platform installation helpers; these are not run automatically.
 
 `0/` holds initial/boundary conditions, `constant/` holds material/physical models,

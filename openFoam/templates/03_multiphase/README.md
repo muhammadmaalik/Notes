@@ -19,7 +19,7 @@ All templates start laminar and use one core by default. Read the [editing guide
 
 ```bash
 # From openFoam/: clone this template before editing.
-python3 scripts/new_case.py 03_multiphase my_run --cores 1
+cp -rT templates/03_multiphase cases/my_run
 cd cases/my_run
 ../../scripts/run_case.sh --mesh-only
 ../../scripts/run_case.sh

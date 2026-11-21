@@ -4,6 +4,7 @@ cases/*
 /runs/*
 !/runs/README.md
 /new_run
+/a.out
 processor*
 postProcessing/
 dynamicCode/

@@ -19,7 +19,7 @@ All templates start laminar and use one core by default. Read the [editing guide
 
 ```bash
 # From openFoam/: clone this template before editing.
-python3 scripts/new_case.py 04_heat_transfer my_run --cores 1
+cp -rT templates/04_heat_transfer cases/my_run
 cd cases/my_run
 ../../scripts/run_case.sh --mesh-only
 ../../scripts/run_case.sh

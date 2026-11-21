@@ -9,7 +9,7 @@ FoamFile
 }
 
 // EDIT: 1 = serial in scripts/run_case.sh; >1 = MPI parallel execution.
-// You can also set this while cloning: new_case.py TEMPLATE NAME --cores 4
+// For a manually copied reference case, edit numberOfSubdomains below.
 numberOfSubdomains 1;
 // Automatic graph partitioning; no hand-written (nx ny nz) split needed.
 method scotch;

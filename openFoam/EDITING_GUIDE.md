@@ -1,7 +1,7 @@
 # Editing and reusing a case
 
 For STEP geometry or an existing volume mesh, see [CAD_IMPORT.md](CAD_IMPORT.md).
-It explains how CAD becomes a fluid mesh and includes copyable meshing examples.
+It explains how CAD becomes a fluid mesh and where the active mesh settings live.
 The primary CAD workflow now uses [new_run.cpp](new_run.cpp): edit `RUN_NAME`, build,
 and execute it to create an independent folder in `runs/`. Its `Allrun` stages a
 dropped STL or converts STEP with host Gmsh. The manual cloning steps below remain
@@ -10,7 +10,8 @@ useful for the other reference cases.
 ## Workflow for a new simulation
 
 1. Choose the closest physics family in `templates/`. From `openFoam/`, run
-   `python3 scripts/new_case.py TEMPLATE my_run --cores 1`.
+   `cp -rT templates/TEMPLATE cases/my_run` for an optional manual reference case.
+   Use a fresh destination name. For the CAD workflow, use the C++ generator above.
 2. Edit `cases/my_run/system/blockMeshDict` for geometry and cell counts.
 3. Update **every** field in `cases/my_run/0/` to match the mesh patch names and
    the physical conditions on each patch.

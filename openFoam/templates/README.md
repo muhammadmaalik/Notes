@@ -2,7 +2,8 @@
 
 Choose a physics family, clone it, and edit the copy. Every template contains
 actual OpenFOAM input files in `0/`, `constant/`, and `system/`, with inline comments
-explaining the defaults and editable settings. No geometry download is needed.
+explaining the defaults and editable settings. The first four include simple
+structured geometry; template 05 uses the CAD file you place in its generated run.
 
 | Folder | Physics | Dimensions / mesh | Default duration |
 | --- | --- | --- | --- |
@@ -19,7 +20,8 @@ The CAD template deliberately contains no sample geometry or generated mesh.
 
 Steady cases may stop early when their residual targets are reached. Those targets
 are numerical stopping criteria, not proof of physical accuracy. Defaults use one
-CPU core; `--cores N` while cloning changes decomposition in the new copy.
+CPU core. Set `CPU_CORES` in the C++ generator, or edit `numberOfSubdomains` in a
+manually copied case's `system/decomposeParDict`.
 
 Read the chosen case README and the workspace [editing guide](../EDITING_GUIDE.md).
 These cases target the OpenCFD distribution and were exercised with v2512.
