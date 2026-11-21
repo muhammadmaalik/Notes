@@ -4,6 +4,12 @@ A STEP file describes CAD geometry. A CFD solver needs cells filling the **fluid
 region**. `controlDict` controls the run; it does not import geometry or generate
 those cells. These notes and examples target the installed OpenCFD v2512 branch.
 
+For your everyday incompressible CAD workflow, use the **C++ generator** described
+in [README.md](README.md#your-c-run-generator). It creates an independent run with
+the mesh dictionaries and matching 3D fields already copied. Drop an STL or STEP
+beside its README and use its `Allrun` launcher; STEP conversion uses host Gmsh.
+The routes below explain the underlying tools and manual alternatives.
+
 ```text
 STEP CAD ──export triangulated surface──> STL ──snappyHexMesh──> volume cells
 STEP CAD ──mesh the fluid volume in Gmsh──────────────────────> MSH ──gmshToFoam──> volume cells

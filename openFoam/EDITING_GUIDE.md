@@ -2,6 +2,10 @@
 
 For STEP geometry or an existing volume mesh, see [CAD_IMPORT.md](CAD_IMPORT.md).
 It explains how CAD becomes a fluid mesh and includes copyable meshing examples.
+The primary CAD workflow now uses [new_run.cpp](new_run.cpp): edit `RUN_NAME`, build,
+and execute it to create an independent folder in `runs/`. Its `Allrun` stages a
+dropped STL or converts STEP with host Gmsh. The manual cloning steps below remain
+useful for the other reference cases.
 
 ## Workflow for a new simulation
 
@@ -121,7 +125,9 @@ For CAD, create a case-specific `constant/triSurface/` geometry and
 needed, `surfaceFeatureExtractDict`. The runner recognizes those files, but these
 structured templates do not include a generic snappy dictionary: surface names,
 refinement distances, layer settings, and the fluid-region selection depend on the
-actual part. After meshing, match all generated patch names in `0/`.
+actual part. The `05_incompressible_stl` profile bundles commented CAD starter
+dictionaries and matching 3D fields for the C++ generator. After meshing, check
+all generated patch names against `0/`.
 
 ## Changing physical models
 

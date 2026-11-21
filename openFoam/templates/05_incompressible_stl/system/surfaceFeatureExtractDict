@@ -1,0 +1,17 @@
+// Allrun stages your root-level STL/STEP as constant/triSurface/part.stl.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object surfaceFeatureExtractDict;
+}
+// EDIT filename here AND in snappyHexMeshDict if it differs from part.stl.
+part.stl
+{
+    extractionMethod extractFromSurface;
+    // Feature selection angle [degrees]; inspect extracted edges for your part.
+    includedAngle 150;
+    subsetFeatures { nonManifoldEdges no; openEdges yes; }
+    writeObj yes; // Optional diagnostic edges, not the fluid volume mesh.
+}

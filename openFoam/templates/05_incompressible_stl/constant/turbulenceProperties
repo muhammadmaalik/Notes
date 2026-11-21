@@ -1,0 +1,13 @@
+// OpenCFD/OpenFOAM independent run. Edit these local inputs using SI units.
+// See this run's README.md for settings and usage.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object turbulenceProperties;
+}
+
+// Laminar starter: no turbulence transport equations or extra turbulence fields.
+// A RAS switch alone is insufficient: see EDITING_GUIDE.md before adding k/omega/nut.
+simulationType laminar;

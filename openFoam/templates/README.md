@@ -10,6 +10,12 @@ explaining the defaults and editable settings. No geometry download is needed.
 | `02_compressible` | Inviscid ideal-gas shock tube | x = −5 to +5 m; 400 × 1 × 1 | 0.007 s |
 | `03_multiphase` | Water–air free surface | 0.584 × 0.584 × 0.01 m; 46 × 46 × 1 | 0.5 s |
 | `04_heat_transfer` | Ideal-gas natural convection | 0.1 × 0.1 × 0.01 m; 40 × 40 × 1 | Up to 5000 iterations |
+| `05_incompressible_stl` | Steady 3D incompressible external CAD flow | User surface in an editable background box | Up to 1000 iterations |
+
+The C++ generator `../new_run.cpp` copies template 05 into an independent run.
+It supplies matching 3D fields, mesh settings, and local launchers; drop your STL or
+STEP in the generated folder and configure its geometry/flow settings before running.
+The CAD template deliberately contains no sample geometry or generated mesh.
 
 Steady cases may stop early when their residual targets are reached. Those targets
 are numerical stopping criteria, not proof of physical accuracy. Defaults use one

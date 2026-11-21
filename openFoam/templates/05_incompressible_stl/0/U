@@ -1,0 +1,19 @@
+// 3D steady, incompressible external flow. Velocity in metres per second.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class volVectorField;
+    object U;
+}
+dimensions [0 1 -1 0 0 0 0];
+// EDIT both the initial field and inlet vector for your intended flow.
+internalField uniform (1 0 0);
+boundaryField
+{
+    inlet { type fixedValue; value uniform (1 0 0); }
+    outlet { type zeroGradient; } // Assumes outward flow at a sufficiently distant outlet.
+    farField { type slip; }       // Distant box sides; place far enough from the body.
+    // Regex also covers body_region patches from multi-region STL surfaces.
+    "body.*" { type noSlip; }     // Stationary solid body; no empty patches in this 3D case.
+}

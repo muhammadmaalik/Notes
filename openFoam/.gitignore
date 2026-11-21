@@ -1,6 +1,9 @@
 cases/*
 !cases/.gitkeep
 !cases/README.md
+/runs/*
+!/runs/README.md
+/new_run
 processor*
 postProcessing/
 dynamicCode/

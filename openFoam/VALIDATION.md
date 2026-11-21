@@ -34,3 +34,29 @@ this installation. They are not mesh-independence, time-step-independence, bench
 accuracy, or experimental validation studies. The user's STEP geometry was not
 provided or imported. Gmsh STEP conversion, other distributions, native installs,
 Docker, and non-Linux hosts were not exercised.
+
+## C++ independent-run workflow — November 21, 2026
+
+The new `new_run.cpp` and `05_incompressible_stl` profile were checked separately
+using disposable runs under `/tmp` and the same installed OpenCFD v2512 image.
+
+- Compiled as C++17 with `-Wall -Wextra -Wpedantic -Werror`, without warnings.
+- Created a complete independent run with executable local launchers and no Python files.
+- Confirmed existing runs and their edits are not overwritten; deleting a disposable
+  run and executing the generator recreates clean inputs.
+- Rejected unsafe names, invalid core counts, dangling destination links, and missing
+  inputs. A run name with spaces and a two-core configuration generated correctly.
+- Moved a generated folder outside its source workspace; its STL preparation,
+  mesh-only workflow, and local solver launcher continued to work.
+- Converted a synthetic STEP cube with Gmsh, including an uppercase extension and
+  spaces in the filename. Confirmed bounds of ±200 mm became ±0.2 m in the STL.
+- Confirmed uppercase STL handling, byte-preserving STL staging, missing/ambiguous
+  geometry rejection, and forwarding mesh-only/existing-mesh arguments.
+- Meshed the converted synthetic surface, passed standard mesh checks, and ran
+  the generated 3D laminar external-flow case to its configured residual criteria
+  in **143 iterations**.
+
+The real user STL files and existing `cases/my_part` were preserved. The newly
+created `runs/run1/` contains clean inputs and launchers, with no geometry or results.
+Testing used a synthetic cube; arbitrary CAD models still require geometry-specific
+domain bounds, units, resolution, flow properties, and model selection.

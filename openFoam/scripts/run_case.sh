@@ -25,7 +25,7 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 case_dir=$(pwd -P)
 case "$case_dir" in
     */templates/*)
-        echo "Error: clone the template with scripts/new_case.py before running it." >&2
+        echo "Error: create a working run before running a reference template." >&2
         exit 1 ;;
 esac
 
@@ -81,7 +81,7 @@ shopt -s nullglob
 solver_logs=(log.*Foam)
 processors=(processor[0-9]* processors[0-9]*)
 if [ "${#solver_logs[@]}" -gt 0 ] || [ "${#processors[@]}" -gt 0 ]; then
-    echo "Error: existing solver logs or decomposed results; use a new case or clean_case.sh first." >&2
+    echo "Error: existing solver logs or decomposed results; create a new run or clean generated output first." >&2
     exit 1
 fi
 for time_dir in */; do
