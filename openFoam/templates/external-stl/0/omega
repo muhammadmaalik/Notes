@@ -1,0 +1,18 @@
+// OpenCFD OpenFOAM v2606. Editable input; SI units unless noted.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class volScalarField;
+    object omega;
+}
+
+dimensions [0 0 -1 0 0 0 0];
+internalField uniform 2.24;
+boundaryField
+{
+    inlet { type fixedValue; value uniform 2.24; }
+    outlet { type inletOutlet; inletValue uniform 2.24; value uniform 2.24; }
+    "(farfield|top|front|back)" { type symmetryPlane; }
+    body { type omegaWallFunction; value uniform 2.24; }
+}

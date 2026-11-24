@@ -1,8 +1,14 @@
-#controlDict
+# Dictionary notes (original examples)
+
+The files in this folder are reference snippets, not a complete runnable
+case. Complete, mutually consistent inputs are under `templates/` and
+`runs/run1/`. Create new cases using `./scripts/foam new TYPE [NAME]`.
+
+## controlDict
 
 The controlDict dictionary is used to specify the main case controls. This includes, e.g. timing information, write format, and optional libraries that can be loaded at run time.
 
-#blockMesh
+## blockMesh
 
 blockMesh is a strucutred hexahedral mesh generator. It's key features are:
 

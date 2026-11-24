@@ -1,0 +1,12 @@
+// OpenCFD OpenFOAM v2606. Editable input; SI units unless noted.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object transportProperties;
+}
+
+transportModel Newtonian;
+// Kinematic viscosity [m^2/s]. Cavity is a Re=100 benchmark.
+nu [0 2 -1 0 0 0 0] 1e-5;

@@ -1,0 +1,10 @@
+// OpenCFD OpenFOAM v2606. Editable input; SI units unless noted.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object turbulenceProperties;
+}
+
+simulationType laminar;

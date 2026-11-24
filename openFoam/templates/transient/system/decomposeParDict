@@ -1,0 +1,14 @@
+// OpenCFD OpenFOAM v2606. Editable input; SI units unless noted.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object decomposeParDict;
+}
+
+// Set automatically by ./scripts/foam run NAME --parallel N.
+numberOfSubdomains 2;
+method scotch;
+distributed no;
+roots ();

@@ -1,0 +1,26 @@
+// OpenCFD OpenFOAM v2606. Editable input; SI units unless noted.
+FoamFile
+{
+    version 2.0;
+    format ascii;
+    class dictionary;
+    object controlDict;
+}
+
+application simpleFoam;
+// For a serial restart: change startFrom to latestTime and increase endTime.
+startFrom startTime;
+startTime 0;
+stopAt endTime;
+// Steady cases count iterations; transient cases use seconds.
+endTime 300;
+deltaT 1;
+writeControl timeStep;
+writeInterval 100;
+purgeWrite 0;
+writeFormat ascii;
+writePrecision 10;
+writeCompression off;
+timeFormat general;
+timePrecision 8;
+runTimeModifiable true;

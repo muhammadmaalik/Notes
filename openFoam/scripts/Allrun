@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+case_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+root=$(cd -- "$case_dir/../.." && pwd -P)
+exec "$root/scripts/run_case.sh" "$(basename "$case_dir")" run "$@"

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Build the standalone C++ launcher on first use (no OpenFOAM SDK required).
+set -euo pipefail
+root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+if [[ ! -x "$root/build/foamctl" || "$root/src/foamctl.cpp" -nt "$root/build/foamctl" ]]; then
+    "$root/scripts/build.sh"
+fi
+exec "$root/build/foamctl" "$@"
