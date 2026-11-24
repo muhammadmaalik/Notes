@@ -1,0 +1,96 @@
+{
+  "name": "Atlas-Watch",
+  "owner_uuid": "058f5c50c39d4cde9d229ad1a24bdb83",
+  "creator_uuid": "058f5c50c39d4cde9d229ad1a24bdb83",
+  "created_at": "2026-11-23 19:06:48",
+  "updated_at": "2026-11-23 19:06:48",
+  "modifier_uuid": "058f5c50c39d4cde9d229ad1a24bdb83",
+  "content": "",
+  "archive": false,
+  "cbb_project": 0,
+  "thumb": "",
+  "ticket": 1,
+  "g_ticket": 1,
+  "boards": [],
+  "block_symbol_attrs_groups": {},
+  "default_sheet": "1b7e3a3bea5ee125",
+  "branch_uuid": "",
+  "pcb_count": 0,
+  "format": "folder",
+  "profile": {
+    "boards": {
+      "877eef359c14c9e8": {
+        "uuid": "877eef359c14c9e8",
+        "title": "Board1",
+        "zIndex": 1
+      }
+    },
+    "schematics": {
+      "bccbc4d53651604e": {
+        "uuid": "bccbc4d53651604e",
+        "name": "Schematic1",
+        "board": "877eef359c14c9e8",
+        "source": "",
+        "version": "1795478811593",
+        "updateTime": 1795478811593
+      }
+    },
+    "sheets": {
+      "a6a33da3f8dd52e8": {
+        "uuid": "a6a33da3f8dd52e8",
+        "title": "P1",
+        "schematic_uuid": "bccbc4d53651604e",
+        "zIndex": 1,
+        "source": "",
+        "version": "1795478811593",
+        "updateTime": 1795478811593
+      }
+    },
+    "pcbs": {
+      "f12e1546655e710c": {
+        "uuid": "f12e1546655e710c",
+        "title": "PCB1",
+        "board": "877eef359c14c9e8",
+        "parent_uuid": "",
+        "source": "",
+        "version": "1795478809674",
+        "updateTime": 1795478809674
+      }
+    },
+    "panels": {
+      "30164cb4bdf0ed76": {
+        "uuid": "30164cb4bdf0ed76",
+        "title": "Panel1",
+        "zIndex": null
+      }
+    },
+    "blockSymbols": {},
+    "owner": {
+      "uuid": "058f5c50c39d4cde9d229ad1a24bdb83"
+    },
+    "simSchematics": {},
+    "simulations": {}
+  },
+  "config": {
+    "defaultSheet": "1b7e3a3bea5ee125",
+    "settings": {
+      "UNIVERSAL": {
+        "dataType": "UNIVERSAL",
+        "data": {
+          "allowLibRename": true,
+          "defaultNetName": true,
+          "wireMultipleNet": true,
+          "netFlagCrossLayerConnection": true,
+          "netLabelCrossPageConnection": true,
+          "busGenerateNetClass": true,
+          "relevanceDisplayRow": "SINGLE",
+          "relevanceBelongSchPage": "NAME",
+          "relevanceLocation": "ZONE",
+          "multipartCrossLayer": true,
+          "nonElectronicAddIntoBom": false,
+          "nonElectronicUpdatePcb": false
+        }
+      }
+    }
+  }
+}
