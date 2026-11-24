@@ -1,32 +1,59 @@
-# Profile for the home PC: RTX 5070 Ti (16 GB) + RTX 3060 (12 GB), Fedora 44.
-# Tip: pin GPUs later with two Ollama instances or llama-server (see README).
+# Home PC: RTX 5070 Ti (16 GB) + RTX 3060 (12 GB), Fedora 44.
+# Personal tweaks go in configs/homepc.local.yaml (merged on top, never overwritten by upgrades).
 profile: homepc
 
 ollama:
-  host: http://127.0.0.1:11434
-  timeout_s: 600
+  host: http://127.0.0.1:11434      # default host (5070 Ti instance when GPU pinning is on)
+  timeout_s: 900
   keep_alive: 30m
 
+# A model is either a tag, or {name, host} to send that role to a specific Ollama instance.
+# Without GPU pinning everything uses 11434. scripts/setup_gpu_pinning.sh --apply writes
+# configs/homepc.local.yaml that moves fast + embed to the 3060 instance on 11435.
 models:
-  fast: qwen3.5:9b           # Swift (3060)
-  reasoning: gpt-oss:20b     # Sage (5070 Ti)
-  # deep: qwen3.8:27b        # spans both GPUs, load on demand
-  embed: qwen3-embedding:0.6b
+  fast:      {name: "qwen3.5:9b",           host: "http://127.0.0.1:11434"}   # Swift  (3060 when pinned)
+  embed:     {name: "qwen3-embedding:0.6b", host: "http://127.0.0.1:11434"}   # memory (3060 when pinned)
+  reasoning: {name: "gpt-oss:20b",          host: "http://127.0.0.1:11434"}   # Sage   (5070 Ti)
+  deep:      {name: "qwen3.8:27b",          host: "http://127.0.0.1:11434"}   # Deep   (both GPUs)
 
+# think: false | true | "low" | "medium" | "high"  (levels are for gpt-oss; Qwen takes true/false)
 model_options:
   fast:      {num_ctx: 16384, think: false, temperature: 0.7}
-  reasoning: {num_ctx: 32768, think: true,  temperature: 1.0}
+  reasoning: {num_ctx: 32768, think: low,   temperature: 1.0}
+  deep:      {num_ctx: 32768, think: true,  temperature: 0.6}
 
 router:
-  llm_classify: true
+  llm_classify: false
   long_prompt_chars: 900
 
+memory:
+  enabled: true
+  extract: true            # background fact extraction after each turn (fast model)
+  top_k: 6
+  min_similarity: 0.35
+  history_turns: 12        # user+assistant pairs kept in context
+
+research:
+  subqueries: 5
+  results_per_query: 5
+  max_sources: 8
+  max_chars_per_source: 7000
+  parallel: 3
+  think: medium            # gpt-oss effort for planning + synthesis
+  num_ctx: 32768
+  formats: [md]            # add docx and/or pdf (needs pandoc; pdf also needs typst or a LaTeX engine)
+
+deep:
+  unload_fast: true        # free the 3060 before loading the 27B model
+
 paths:
-  db: data/atlas.db              # relative = inside the repo (atlas/data)
+  db: data/atlas.db
   workspace: data/workspace
+  reports: data/reports
+  profile: configs/profile.yaml
+
+voice:
+  enabled: false           # phase 2
 
 agent:
   max_tool_steps: 8
-  system_prompt: >
-    You are Atlas, Muhammad's personal assistant. Be concise and accurate.
-    Use tools when they help (search, files, deadlines). If you are not sure, say so.

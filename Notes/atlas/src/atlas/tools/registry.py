@@ -8,9 +8,10 @@ FORBIDDEN -> can never be registered (deletes, sudo, sending messages, payments)
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
 
 FORBIDDEN_NAME_PARTS = ("delete", "remove", "rm", "sudo", "format", "kill", "send", "pay", "purchase")
 

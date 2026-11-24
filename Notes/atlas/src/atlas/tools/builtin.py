@@ -13,12 +13,11 @@ MAX_READ_BYTES = 20_000
 
 def web_search(query: str, max_results: int = 5) -> str:
     """DuckDuckGo search via the `ddgs` package (no API key)."""
+    from .. import web
     try:
-        from ddgs import DDGS
+        results = web.search(query, max_results)
     except ImportError:
         return "ERROR: ddgs not installed (uv sync)."
-    try:
-        results = list(DDGS().text(query, max_results=max(1, min(int(max_results), 10))))
     except Exception as e:  # rate limits, offline, backend changes
         return f"Search failed ({e.__class__.__name__}: {e}). Try again or rephrase."
     if not results:
@@ -27,6 +26,17 @@ def web_search(query: str, max_results: int = 5) -> str:
     for i, r in enumerate(results, 1):
         lines.append(f"{i}. {r.get('title', '')}\n   {r.get('href', '')}\n   {r.get('body', '')[:300]}")
     return "\n".join(lines)
+
+
+def fetch_url(url: str, max_chars: int = 8000) -> str:
+    """Read a web page's main text."""
+    from .. import web
+    if not url.startswith(("http://", "https://")):
+        return "ERROR: url must start with http:// or https://"
+    try:
+        return web.fetch_text(url, max(500, min(int(max_chars), 20000)))
+    except Exception as e:
+        return f"ERROR: could not fetch {url}: {e.__class__.__name__}: {e}"
 
 
 def read_file(path: str) -> str:
@@ -86,6 +96,10 @@ def build_registry(mem: Memory, workspace: Path, confirm=None) -> ToolRegistry:
                       {"type": "object", "properties": {"query": {"type": "string"},
                                                         "max_results": {"type": "integer"}},
                        "required": ["query"]}, web_search, Tier.READ))
+    reg.register(Tool("fetch_url", "Download a web page and return its main text, to actually read a source.",
+                      {"type": "object", "properties": {"url": {"type": "string"},
+                                                        "max_chars": {"type": "integer"}},
+                       "required": ["url"]}, fetch_url, Tier.READ))
     reg.register(Tool("read_file", "Read a UTF-8 text file (first 20 KB).",
                       {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]},
                       read_file, Tier.READ))

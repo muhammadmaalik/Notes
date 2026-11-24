@@ -1,3 +1,4 @@
+from conftest import FakeOllama
 from fastapi.testclient import TestClient
 from typer.testing import CliRunner
 
@@ -6,7 +7,6 @@ from atlas.cli import app as cli_app
 from atlas.gateway import create_app
 from atlas.memory import Memory
 from atlas.tools.builtin import build_registry
-from conftest import FakeOllama
 
 
 def test_agent_routes_and_uses_tools(cfg, mem):
@@ -16,7 +16,7 @@ def test_agent_routes_and_uses_tools(cfg, mem):
             {"function": {"name": "deadlines_list", "arguments": {}}}]},
         {"role": "assistant", "content": "Your next deadline is the PHY 251 lab on Nov 25."},
     ])
-    atlas = Atlas(cfg, fake.client(), mem, build_registry(mem, cfg.workspace))
+    atlas = Atlas(cfg, fake.pool(cfg), mem, build_registry(mem, cfg.workspace))
     cid = mem.new_conversation()
     r = atlas.ask(cid, "hey what's due")
     assert r.role == "fast" and r.model == "qwen3.5:4b"
@@ -31,16 +31,16 @@ def test_agent_routes_and_uses_tools(cfg, mem):
 
 def test_agent_reasoning_route(cfg, mem):
     fake = FakeOllama(replies=[{"role": "assistant", "content": "x = 3"}])
-    atlas = Atlas(cfg, fake.client(), mem, build_registry(mem, cfg.workspace))
+    atlas = Atlas(cfg, fake.pool(cfg), mem, build_registry(mem, cfg.workspace))
     r = atlas.ask(mem.new_conversation(), "Solve the equation 2x + 4 = 10 step by step")
     assert r.role == "reasoning" and fake.requests[0]["model"] == "qwen3.5:9b"
-    assert fake.requests[0]["think"] is True
+    assert fake.requests[0]["think"] == cfg.options_for("reasoning")["think"]
 
 
 def test_agent_stops_at_tool_limit(cfg, mem):
     loop = {"role": "assistant", "content": "", "tool_calls": [{"function": {"name": "list_dir", "arguments": {"path": "."}}}]}
     fake = FakeOllama(replies=[loop] * 20)
-    atlas = Atlas(cfg, fake.client(), mem, build_registry(mem, cfg.workspace))
+    atlas = Atlas(cfg, fake.pool(cfg), mem, build_registry(mem, cfg.workspace))
     r = atlas.ask(mem.new_conversation(), "hi")
     assert "tool-step limit" in r.text and len(r.tool_calls) == cfg.max_tool_steps + 1
 
@@ -78,3 +78,13 @@ def test_cli_deadlines(cfg):
     assert res.exit_code == 0
     assert "No deadlines" in runner.invoke(cli_app, ["deadlines", "list"]).output
     assert runner.invoke(cli_app, ["deadlines", "add", "x", "--due", "someday"]).exit_code == 1
+
+
+def test_top_level_profile_opens_tui(monkeypatch):
+    from typer.testing import CliRunner
+    import atlas.cli as cli
+    seen = {}
+    monkeypatch.setattr(cli, "tui", lambda profile=None, resume=None, last=False: seen.update(profile=profile, last=last))
+    res = CliRunner().invoke(cli.app, ["--profile", "homepc", "--last"])
+    assert res.exit_code == 0, res.output
+    assert seen == {"profile": "homepc", "last": True}

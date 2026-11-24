@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Atlas v0 setup for Fedora 44 (laptop or home PC).
-# Usage:  cd /home/maalik/Desktop/Notes/Notes/atlas && bash scripts/setup_fedora.sh [laptop|homepc]
+# Atlas setup for Fedora 44 (laptop or home PC).
+# Usage:  cd ~/Desktop/Notes/Notes/atlas && bash scripts/setup_fedora.sh [laptop|homepc]
 # Safe to re-run. It never installs the NVIDIA driver for you (that needs a reboot
 # and possibly Secure Boot key enrollment); it tells you the exact commands instead.
 set -euo pipefail
@@ -76,7 +76,7 @@ done
 ok "models: $MODELS"
 
 # ---------------------------------------------------------------- 6. Data dir + check
-mkdir -p data/workspace
+mkdir -p data/workspace data/reports
 say "Health check"
 ATLAS_PROFILE="$PROFILE" uv run atlas doctor
 
@@ -84,8 +84,10 @@ cat <<DONE
 
 Done. Next:
   cd ${REPO_DIR}
-  uv run atlas chat                 # talk to Atlas (Ctrl+D to quit)
+  uv run atlas chat --profile ${PROFILE} -v     # talk to Atlas (/help for commands)
+  uv run atlas research "Voyager 1 design" --profile ${PROFILE}
   uv run atlas deadlines add "PHY 251 lab report" --due friday --course "PHY 251"
   uv run atlas deadlines list
-Data lives in ${REPO_DIR}/data (SQLite db + workspace).
+Data lives in ${REPO_DIR}/data (SQLite db, reports, workspace).
+Edit configs/profile.yaml so Atlas knows you. Home PC: bash scripts/setup_gpu_pinning.sh
 DONE

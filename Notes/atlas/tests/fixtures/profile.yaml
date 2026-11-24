@@ -1,0 +1,37 @@
+# Who Atlas is talking to. Edit freely; Atlas reads this on every start.
+# Keep secrets and sensitive personal records (IDs, immigration, medical, finances) OUT of this file.
+name: Muhammad Maalik
+call_me: Maalik
+age: 19
+timezone: America/New_York
+location: Long Island / Stony Brook, NY
+
+education:
+  school: Stony Brook University
+  majors: [Mechanical Engineering, Physics]   # dual major
+  class_of: 2029
+
+roles:
+  - FEA Lead, Stony Brook Robotics
+  - Autodesk Student Ambassador
+
+interests:
+  - quantum mechanics and modern physics
+  - coding and machine learning
+  - spacecraft, robotics, embedded hardware
+
+career_targets: [Tesla, NASA, CERN, Jane Street]
+
+projects:
+  - "Atlas: this assistant (local multi-model AI on his home PC + laptop)"
+  - "Custom Linux smartwatch (BLE + LoRa link to Atlas)"
+  - "PsiSat: student 1U CubeSat project"
+  - "DARPA Lift Challenge: heavy-lift drone entry"
+
+schedule:
+  - "Works Saturdays 9:00 AM - 5:30 PM"
+
+preferences:
+  - "Concise, direct answers; lead with the answer, then detail if useful"
+  - "Halal food only (relevant for restaurant/food/recipe suggestions)"
+  - "Engineering-level depth is welcome: equations, units, real numbers, sources"

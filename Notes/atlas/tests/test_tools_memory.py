@@ -69,7 +69,7 @@ def test_web_search_formats_results(monkeypatch):
     import types
 
     class FakeDDGS:
-        def text(self, q, max_results=5):
+        def text(self, q, max_results=5, **kw):
             return [{"title": "Ollama", "href": "https://ollama.com", "body": "Run models locally"}]
 
     monkeypatch.setitem(sys.modules, "ddgs", types.SimpleNamespace(DDGS=FakeDDGS))
