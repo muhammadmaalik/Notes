@@ -1,27 +1,45 @@
-# Reference simulation templates
+# Simulation templates
 
-Choose a physics family, clone it, and edit the copy. Every template contains
-actual OpenFOAM input files in `0/`, `constant/`, and `system/`, with inline comments
-explaining the defaults and editable settings. The first four include simple
-structured geometry; template 05 uses the CAD file you place in its generated run.
+`./scripts/foam new TYPE [NAME]` copies one complete case into `runs/NAME`.
+Files here are clean inputs; generated meshes, logs, and solution directories
+belong in runs. Template edits affect future copies only.
 
-| Folder | Physics | Dimensions / mesh | Default duration |
+| Type | Physics | Initial fields | Mesh |
 | --- | --- | --- | --- |
-| `01_incompressible` | Steady laminar channel | 2 × 0.2 × 0.01 m; 80 × 20 × 1 | Up to 1000 iterations |
-| `02_compressible` | Inviscid ideal-gas shock tube | x = −5 to +5 m; 400 × 1 × 1 | 0.007 s |
-| `03_multiphase` | Water–air free surface | 0.584 × 0.584 × 0.01 m; 46 × 46 × 1 | 0.5 s |
-| `04_heat_transfer` | Ideal-gas natural convection | 0.1 × 0.1 × 0.01 m; 40 × 40 × 1 | Up to 5000 iterations |
-| `05_incompressible_stl` | Steady 3D incompressible external CAD flow | User surface in an editable background box | Up to 1000 iterations |
+| `cavity` | Transient laminar incompressible, `icoFoam` | U, p | 2D blockMesh, 400 cells |
+| `incomp` | Steady laminar incompressible, `simpleFoam` | U, p | 3D square duct, 2,560 cells |
+| `transient` | Transient laminar incompressible, `pimpleFoam` | U, p | Same 3D duct |
+| `external-stl` | Steady incompressible RANS SST, `simpleFoam` | U, p, k, omega, nut | blockMesh + snappyHexMesh |
 
-The C++ generator `../new_run.cpp` copies template 05 into an independent run.
-It supplies matching 3D fields, mesh settings, and local launchers; drop your STL or
-STEP in the generated folder and configure its geometry/flow settings before running.
-The CAD template deliberately contains no sample geometry or generated mesh.
+See the main README's file table and [geometry guide](../docs/geometry.md).
+Properties and solver duration are starting values, not a universal setup for
+arbitrary fluids or shapes. The external template needs an imported STL.
 
-Steady cases may stop early when their residual targets are reached. Those targets
-are numerical stopping criteria, not proof of physical accuracy. Defaults use one
-CPU core. Set `CPU_CORES` in the C++ generator, or edit `numberOfSubdomains` in a
-manually copied case's `system/decomposeParDict`.
+## Adding a simulation type
 
-Read the chosen case README and the workspace [editing guide](../EDITING_GUIDE.md).
-These cases target the OpenCFD distribution and were exercised with v2512.
+For another channel/cavity variant, copy a suitable template, adjust inputs,
+and add a registry entry to `src/foamctl.cpp`. Build with `scripts/build.sh`.
+The new template's `controlDict/application` determines which solver runs.
+Supply every required field, consistent boundary patches, transport/model
+properties, and matching schemes/coupling settings. A solver-name change alone
+does not define new physics.
+
+The pre-existing `comp/`, `heat/`, and `multiphase/` directories are documented
+extension areas, not selectable runnable templates. For compressibility,
+thermal flow, or multiple phases, start from the **matching official v2606
+tutorial** and retain its initialization/meshing steps. For a native/full
+OpenFOAM tutorial installation, for example:
+
+```bash
+# Run in a Bash shell with the native OpenFOAM environment loaded.
+find "$FOAM_TUTORIALS" -maxdepth 3 -type d
+# Copy your chosen complete tutorial to a new directory before editing.
+# Read and execute that tutorial's Allrun; steps differ by physics.
+```
+
+The pinned runtime container used here does not include the full tutorial
+collection. Obtain the source/tutorial archive or an official development
+installation through the [release page](https://www.openfoam.com/current-release).
+Use the tutorial's own runner until its extra steps have been integrated into
+`scripts/case_pipeline.sh`; this starter pipeline handles blockMesh, optional
+single-body snappy, and single-region incompressible solvers.

@@ -1,101 +1,133 @@
 # OpenFOAM simulation workspace
 
-Reusable, commented starter cases for the **OpenCFD / openfoam.com** distribution.
-The defaults use SI units and small structured meshes so you can inspect the
-workflow before adapting it to your own geometry. See [EDITING_GUIDE.md](EDITING_GUIDE.md)
-for what each file does, units, boundary conditions, and an editing checklist.
-For STEP/STL, use the C++ generator below. The commented mesh settings live in
-[the CAD template](templates/05_incompressible_stl/system/). For an existing volume
-mesh, see [CAD_IMPORT.md](CAD_IMPORT.md).
+Choose a simulation, create a complete case, edit its inputs, and run it. The
+standalone C++17 launcher in `src/foamctl.cpp` manages cases; the OpenFOAM
+applications perform the CFD calculation. These inputs target **OpenCFD
+OpenFOAM v2606**, following the [2606 documentation](https://doc.openfoam.com/2606/)
+and [quickstart](https://doc.openfoam.com/2606/quickstart/).
 
-| Template | Solver | Starting problem |
+## Start here
+
+Run commands from this project's root directory. On Fedora 44:
+
+```bash
+./setup/install_linux.sh --with-paraview
+./scripts/foam doctor
+./scripts/foam run run1
+./scripts/foam view run1
+```
+
+The installer needs sudo for host packages. It installs prerequisites and pulls
+the pinned official `docker.io/opencfd/openfoam-run:2606` image. The launcher
+builds automatically on first use. If prerequisites and the image are already
+installed, start with `./scripts/foam doctor`. See [setup](setup/README.md) for
+native installations, Docker, and environment options.
+
+**`runs/run1` is already configured:** a small 2D lid-driven cavity using
+`icoFoam`, with a 20 × 20 × 1 mesh definition, a 1 m/s moving lid, and viscosity
+0.001 m²/s. All input files are present. `blockMesh` generates the actual mesh
+automatically on the first run. If this copy already contains a checked mesh,
+the launcher reuses it.
+
+## Choose a simulation
+
+| Template name | Solver | Starting problem |
 | --- | --- | --- |
-| [01_incompressible](templates/01_incompressible/) | `simpleFoam` | Steady 2D laminar channel |
-| [02_compressible](templates/02_compressible/) | `rhoCentralFoam` | Transient 1D ideal-gas shock tube |
-| [03_multiphase](templates/03_multiphase/) | `interFoam` | Transient 2D water–air dam break |
-| [04_heat_transfer](templates/04_heat_transfer/) | `buoyantSimpleFoam` | Steady 2D natural convection in air |
-| [05_incompressible_stl](templates/05_incompressible_stl/) | `simpleFoam` | 3D external-flow CAD inputs for the C++ generator |
-
-These are editable starting points, not a universal model for every flow. All five
-start laminar. Turbulence, CAD meshes, moving meshes, combustion, and coupled
-solid–fluid heat transfer need additional case-specific setup. OpenFOAM Foundation
-(openfoam.org) releases use different solver/configuration conventions; do not mix
-files from the two distributions without checking them.
-
-## Your C++ run generator
-
-Edit `RUN_NAME` (for example `"run1"` or `"run 2"`) and `CPU_CORES` near the top of
-[new_run.cpp](new_run.cpp). From `openFoam/`, build and execute:
+| `cavity` | `icoFoam` | 2D transient, laminar cavity; Re = 100 |
+| `incomp` | `simpleFoam` | 3D steady, laminar channel; water-like viscosity |
+| `transient` | `pimpleFoam` | 3D transient, laminar channel |
+| `external-stl` | `simpleFoam` | 3D steady RANS, k-omega SST, flow around a closed solid |
 
 ```bash
-c++ -std=c++17 -Wall -Wextra -Wpedantic new_run.cpp -o new_run
-./new_run
+./scripts/foam list
+./scripts/foam new incomp             # creates next unused run2, run3, ...
+./scripts/foam new transient pulse    # creates runs/pulse
+./scripts/foam new external-stl wing  # creates runs/wing
 ```
 
-This creates **`runs/run1/`** with a complete, commented **3D incompressible
-external-flow** setup. Drop one STL or STEP directly into that folder. Edit its
-copied inputs for your geometry, units, inlet velocity, and fluid viscosity.
-Then, from inside the run folder:
+New runs contain independent copies of `0/`, `constant/`, `system/`, a case
+README, a `case.foam` ParaView marker, and executable `Allrun`. Existing run
+directories are never overwritten. Editing a run does not change the template
+or another run. Edit templates only when changing defaults for future cases.
+
+## Edit the case
+
+| File in `runs/NAME/` | What to change |
+| --- | --- |
+| `0/U` | Initial velocity and inlet/wall velocities [m/s] |
+| `0/p` | Initial and boundary **kinematic** pressure [m²/s²] |
+| `0/k`, `0/omega`, `0/nut` | Turbulence conditions, in the SST template |
+| `constant/transportProperties` | Kinematic viscosity `nu` [m²/s] |
+| `constant/turbulenceProperties` | Laminar/RAS model selection |
+| `constant/triSurface/body.stl` | Imported surface, in metres |
+| `system/blockMeshDict` | Background box, cell counts, patch definitions |
+| `system/snappyHexMeshDict` | Surface refinement, fluid seed point, optional layers |
+| `system/controlDict` | Solver, end time/iterations, step size, output interval |
+| `system/fvSchemes`, `system/fvSolution` | Discretisation, linear solvers, coupling |
+| `system/decomposeParDict` | Parallel decomposition (core count set by launcher) |
+
+Patch names in all fields under `0/` must match the generated mesh's
+`constant/polyMesh/boundary`. The cavity's front/back patches are `empty`, with
+one cell through the thickness. Channel cases are fully 3D. In these
+incompressible solvers, convert a kinematic pressure difference to Pa using
+`deltaP = rho * delta(p)` with the appropriate constant fluid density.
+
+## Mesh, solve, inspect
 
 ```bash
-./Allrun --mesh-only       # Prepare geometry, build/check the mesh; inspect case.foam.
-./Allrun --existing-mesh   # Solve using the mesh you just inspected.
+./scripts/foam mesh pulse             # build and validate mesh only
+./scripts/foam remesh run1            # rebuild after mesh edits, before results exist
+./scripts/foam check pulse            # check existing mesh
+./scripts/foam solve pulse            # check and solve that mesh
+./scripts/foam run wing               # mesh if needed, check, then solve
+./scripts/foam run pulse --parallel 4 # new run: decompose, solve, reconstruct
+./scripts/foam view wing              # host ParaView
+
+# Each case also has its own executable entry point:
+./runs/run1/Allrun
 ```
 
-The folder contains its own inputs and launch scripts; it can be moved elsewhere.
-STL is staged automatically; STEP is converted to a surface STL with host Gmsh,
-requesting metre coordinates. Gmsh is required only for STEP. No Python is needed
-for this generator or its generated launcher. Surface conversion and meshing still
-need geometry-specific domain size, resolution, and boundary choices.
+Utilities and solvers write timestamped logs under `runs/NAME/logs/`. The
+workflow stops on command failures and on a failed `checkMesh` report. After a
+solver finishes, inspect its residuals and continuity errors: reaching
+`endTime` alone does not demonstrate convergence. ParaView: open `case.foam`,
+click **Apply**, select the latest time, color by **U → Magnitude** or **p**,
+then use **Slice**, **Stream Tracer**, or **Plot Over Line**.
 
-The generator refuses to overwrite an existing run. To reset, delete that run
-folder and execute `./new_run` again. To keep it and make another, change `RUN_NAME`,
-rebuild, and execute. The generated run's README explains the editable settings.
-
-For learning C++: the generator demonstrates filesystem paths, file copying,
-streams, containers, exceptions, and automatic resource ownership (RAII).
-OpenFOAM itself handles the simulation's computational memory.
-
-## Other reference cases
-
-From this `openFoam/` directory:
+For a ready-to-mesh geometry example:
 
 ```bash
-# Optional manual copy for a reference case; the CAD workflow uses C++ above.
-cp -rT templates/01_incompressible cases/my_channel
-cd cases/my_channel
-# Edit the copied inputs before running.
-../../scripts/run_case.sh --mesh-only
-# Inspect case.foam in ParaView, then run the full case:
-../../scripts/run_case.sh
+./scripts/foam new external-stl cube-demo
+./scripts/import_geometry.sh cube-demo examples/geometry/cube.stl
+./scripts/foam run cube-demo
 ```
 
-The runner uses a sourced native OpenFOAM environment, or automatically selects
-Podman then Docker. Set `OPENFOAM_RUNTIME=docker` to choose Docker explicitly.
-Set `OPENFOAM_IMAGE=your-image:tag` to use a fixed compatible container release;
-otherwise the existing `opencfd/openfoam-default:latest` default is used. Record the
-version printed at startup because `latest` can change. Local validation used
-OpenCFD **v2512**; see [VALIDATION.md](VALIDATION.md) for the checks performed.
+For your own **STEP or STL**, follow [the geometry guide](docs/geometry.md).
+It covers conversion, millimetres to metres, alignment, box size, fluid seed
+points, surface checks, patches, layers, and internal flow.
 
-From `openFoam/`, after the solver completes:
+## Layout and further reading
 
-```bash
-python3 scripts/plot_residuals.py cases/my_channel
+```text
+src/foamctl.cpp       C++ case creation and command dispatch
+scripts/             executable build, geometry, runtime, and case tools
+setup/               installation script and platform instructions
+templates/           clean, editable simulation inputs
+runs/run1/           prepared cavity case; new runs are created alongside it
+examples/geometry/   small watertight example STL
+docs/                detailed workflow, geometry, and validation notes
+cases/               original dictionary examples and syntax notes
+build/               generated launcher binary (ignored)
 ```
 
-Plotting requires `matplotlib`. Explicit shock-capturing updates may not produce
-iterative residuals for every conserved field. Inspect the physical fields and
-conservation errors as well as any residual plot.
+- [Setup and environment](setup/README.md)
+- [Case lifecycle, restarting, parallel runs, troubleshooting](docs/workflow.md)
+- [STEP/STL geometry](docs/geometry.md)
+- [Template details and adding other physics](templates/README.md)
+- [Validation performed on this workspace](docs/validation.md)
 
-## Workspace layout
-
-- `templates/`: reference inputs; copy these before editing.
-- `cases/`: working runs; outputs and local changes here are ignored by Git.
-- `runs/`: independent CAD runs created by `new_run.cpp`; ignored by Git.
-- `new_run.cpp`: editable C++17 generator; builds the local `new_run` executable.
-- `scripts/`: launch, clean, and optional residual plotting helpers.
-- `setup/`: existing platform installation helpers; these are not run automatically.
-
-`0/` holds initial/boundary conditions, `constant/` holds material/physical models,
-and `system/` holds meshing, numerics, and run controls. Configuration files contain
-`//` comments next to the values you are likely to edit.
+These are small learning/starter cases. Choose material properties, boundary
+conditions, turbulence treatment, domain size, mesh resolution, and time steps
+for your particular problem. Check mass conservation, mesh/time-step
+independence, and relevant experimental or analytical results before using a
+result for design.

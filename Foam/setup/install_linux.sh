@@ -1,56 +1,45 @@
 #!/usr/bin/env bash
-set -e
-
-if [ -f /etc/os-release ]; then
-    . /etc/os-release
-    OS=$ID
-else
-    echo "Error: Cannot detect Linux distribution."
-    exit 1
-fi
-
-echo "Detected OS: $OS"
-
-case "$OS" in
-    fedora)
-        # Install ParaView, Python plotting tools, and Podman
-        sudo dnf install -y paraview python3-numpy python3-matplotlib podman
-
-        # Try native COPR install first; if broken on newer Fedora (e.g., fc44), fall back to container image
-        sudo dnf install -y dnf-plugins-core
-        sudo dnf copr enable -y openfoam/openfoam || true
-        if sudo dnf install -y openfoam-default 2>/dev/null; then
-            OF_RC=$(ls -d /usr/lib/openfoam/openfoam*/etc/bashrc 2>/dev/null | tail -n 1)
-            if [ -n "$OF_RC" ]; then
-                grep -qxF "source $OF_RC" ~/.zshrc 2>/dev/null || echo "source $OF_RC" >> ~/.zshrc
-                grep -qxF "source $OF_RC" ~/.bashrc 2>/dev/null || echo "source $OF_RC" >> ~/.bashrc
-            fi
-            echo "Native OpenFOAM installed! Run: source ~/.zshrc"
-        else
-            echo "Native COPR package unavailable for Fedora $VERSION_ID. Pulling official OpenCFD container..."
-            podman pull docker.io/opencfd/openfoam-default:latest
-            echo "Container setup complete! scripts/run_case.sh will automatically use Podman."
-        fi
+# Install host prerequisites, then fetch a versioned OpenCFD runtime image.
+# Does not edit shell startup files or enable third-party COPRs.
+set -euo pipefail
+backend=podman
+visualization=false
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --backend) backend=${2:?Choose podman or docker}; shift 2 ;;
+        --with-paraview) visualization=true; shift ;;
+        --help|-h)
+            echo "Usage: setup/install_linux.sh [--backend podman|docker] [--with-paraview]"
+            echo "Installs a C++ compiler, Python, util-linux, and Podman (or uses existing Docker)."
+            echo "Pulls docker.io/opencfd/openfoam-run:2606; does not run simulations."
+            exit ;;
+        *) echo "Unknown option: $1" >&2; exit 2 ;;
+    esac
+done
+[[ "$backend" == podman || "$backend" == docker ]] || { echo "Choose podman or docker. Native setup: setup/README.md" >&2; exit 2; }
+[[ -f /etc/os-release ]] || { echo "Cannot identify Linux distribution" >&2; exit 1; }
+source /etc/os-release
+privilege=()
+if (( EUID != 0 )); then privilege=(sudo); fi
+case "$ID" in
+    fedora|rhel|centos|rocky|almalinux)
+        packages=(gcc-c++ python3 util-linux)
+        [[ "$backend" != podman ]] || packages+=(podman)
+        [[ "$visualization" != true ]] || packages+=(paraview)
+        "${privilege[@]}" dnf install -y "${packages[@]}"
         ;;
     ubuntu|debian)
-        curl -s https://dl.openfoam.com/add-debian-repo.sh | sudo bash
-        sudo apt-get update
-        sudo apt-get install -y openfoam-default paraview python3-numpy python3-matplotlib
-        OF_RC=$(ls -d /usr/lib/openfoam/openfoam*/etc/bashrc 2>/dev/null | tail -n 1)
-        if [ -n "$OF_RC" ]; then
-            grep -qxF "source $OF_RC" ~/.bashrc 2>/dev/null || echo "source $OF_RC" >> ~/.bashrc
-        fi
-        echo "Installation complete! Run: source ~/.bashrc"
+        packages=(g++ python3 util-linux)
+        [[ "$backend" != podman ]] || packages+=(podman)
+        [[ "$visualization" != true ]] || packages+=(paraview)
+        "${privilege[@]}" apt-get update
+        "${privilege[@]}" apt-get install -y "${packages[@]}"
         ;;
-    *)
-        echo "Unsupported distro ($OS). Pulling official OpenCFD container via Podman/Docker..."
-        if command -v podman &> /dev/null; then
-            podman pull docker.io/opencfd/openfoam-default:latest
-        elif command -v docker &> /dev/null; then
-            docker pull opencfd/openfoam-default:latest
-        else
-            echo "Please install podman or docker first."
-            exit 1
-        fi
-        ;;
+    *) echo "Install a C++17 compiler, Python 3, util-linux, and $backend using your distro's package manager." >&2 ;;
 esac
+command -v "$backend" >/dev/null || { echo "Install/configure $backend, then rerun this script." >&2; exit 1; }
+image=${FOAM_IMAGE:-docker.io/opencfd/openfoam-run:2606}
+"$backend" pull "$image"
+root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+"$root/scripts/build.sh"
+echo "Setup complete. Verify with: FOAM_BACKEND=$backend ./scripts/foam doctor"

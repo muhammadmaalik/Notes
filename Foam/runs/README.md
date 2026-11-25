@@ -1,12 +1,11 @@
-# Independent generated runs
+# Runs
 
-From `openFoam/`, compile `new_run.cpp` and execute `./new_run` to create `run1/`.
-Change `RUN_NAME` near the top of the C++ source and rebuild to use another name.
+`run1/` is a prepared 2D laminar cavity. Use `./scripts/foam run run1` from
+the project root or `./runs/run1/Allrun` from any directory.
 
-Each generated folder contains its own commented inputs and launch scripts.
-Drop one STL/STEP in it, edit its settings, and run `./Allrun --mesh-only`, followed
-by `./Allrun --existing-mesh` once the mesh has been inspected.
+Create additional independent cases with `./scripts/foam new TYPE [NAME]`.
+Each run contains editable inputs, its own mesh, logs, and results. Templates
+remain clean. Generated meshes and results are ignored by Git; if cloning
+this workspace, the first run regenerates the mesh from the included inputs.
 
-To reset, delete only the generated run folder and execute the generator again.
-Existing folders are never overwritten. These working runs are ignored by Git;
-this README is retained. Your older working cases under `cases/` are independent.
+See the main README and `docs/workflow.md` for execution and restarting.
