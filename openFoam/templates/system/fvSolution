@@ -1,0 +1,42 @@
+// OpenCFD OpenFoam v2606. Editable input;
+FoamFile
+{
+	version 2.0;
+	format	ascii;
+	class	dictionary;
+	object	fvSolution;
+}
+
+//This file has three main sections: solvers, SIMPLE and relaxation factors.
+
+
+solvers
+{
+	p { solver GAMG; smoother GaussSeidel; tolerance 1e-7; relTol 0.05; }
+	pFinal { $p; relTol 0; }
+	"(U|k|omega)" { solver smoothSolver; smoother symGaussSeidel; tolerance 1e-8; relTol 0.1; }
+	"(U|k|omega)Final" { solver smoothSolver; smoother symGaussSeidel; tolerance 1e-8; relTol 0; }
+}
+// At every step, openFoam turns mesh into massive matrices, for pressure p, velocity U and turbulence k. In this script, pressure p, uses a multigrid solver GAMG to quickly solve pressure coarse and fine mesh levels. "(U|k|omega)" uses a smoothSolver to solve Velocity and  turbulence variables. Tolerance and relTol tells the linear solver when an individual solver when an individual matrix is "solved enough" to move on to the next step. The number is set, whihc is 1e-7 -- or the tolerance, when it solves down to that number it moves on, basically we can increase the tolerance so it refines the quality of the simulation, it is simply a balance between time/compute and quality. 1e-7, is a good number to start with. 
+
+
+SIMPLE
+{
+	nNonOrthogonalCorrectors 1;
+	residualControl
+	{
+		p 1e-5;
+		U 1e-6;
+		"(k|omega)" 1e-6;
+	}
+}
+
+// SIMPLE is the steady state algorithm that links pressure and velocity together so mass is conserved. nNonOrthogonalCorrectors 1; adds 1 extra correction pass to keep the math accurate if your mesh cells are skewed or tilted. residualControl: The overall stopping criteria~ Once the errors--residuals for p, U, k and omega drop below a certain number, which in this case 1e-5; openFoam considers the simulation converged and stops.
+
+relaxationFactors
+{
+	fields { p 0.3; }
+	equations { U 0.7; k 0.7; omega 0.7; }
+}
+
+// Since fluids equations are non-linear, updating pressure and veloicity and pressure by 1--% of their newly calculated alues at each step will cuase the simulation to blow up --or diverge. p 0.3/ U 0.7; only applied 30% of the new pressure change and 70% of the new velocity change pre step. This slows down the march to the answer slightly but keeps the simultaion stable.

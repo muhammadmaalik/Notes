@@ -1,0 +1,25 @@
+// OpenCFD OpenFOAM v2606. Editable input;
+FoamFile
+{
+	version 2.0;
+	format ascii;
+	class volScalarField;
+	object p;
+}
+
+dimensions	[0 2 -2 0 0 0 0];
+//Again, the Units for this are m^2/s^(-2), This is because we are not using Dynamic Pressure which would have dimensions of [1 -1 -2 0 0 0 0]. We will be using Kinemetic Pressure, you will know the reason when you study Navier Strokes eqautions, well, in simple words, when you are dealing with incompressible fluids (-- where density is constant), instead of storing the P in memory, we divide the density with every single pressure equation for a mesh cell, during every iteration. As you can see, the mass (kg) place is nill, hence, the solver only needs to track the motion with respect to distance and time. The Kinemetic pressure looks something like this: K = Pressure / Density, and when you compute the final form, K = m^2 * s^(-2).
+internalField uniform	0;
+//This is declaring that the internalField, at the start of the simulatation or at t=0, the Kinametic Pressure is zero.
+//This is also standard, as we wanna start off clean, declaring a reference point for the solver.
+
+boundaryField
+{
+	inlet { type zeroGradient; }
+	//zeroGradient declares the pressure is free to autoadjust itself without hardcoded constraints. Or, the rate of change of pressure with respect to the boundary is zero.
+	outlet { type fixedValue; value uniform 0;}
+	// We're fixing the value of pressure here, being zero  at the outlet/exit. This exit pressure is now the reference pressure, or in other terms, equal to zero.
+	walls { type zeroGradient; }
+	// Again, allows the pressure to autoadjust itself, as done before in ~/openFoam/templates/incomp/constant/0/U .
+}
+
